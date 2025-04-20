@@ -1,0 +1,5 @@
+menuconfig EXAMPLES_PARAM_LOGGER
+	bool "param_logger"
+	default n
+	---help---
+		Enable support for param_logger
