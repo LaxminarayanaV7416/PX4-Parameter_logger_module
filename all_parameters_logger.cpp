@@ -50,11 +50,13 @@ AllParametersLogger::AllParametersLogger() : ModuleParams(nullptr)
 {
 	// Find parameters by name
 	_lpe_fusion_param = param_find("LPE_FUSION");
-	_lpe_vxy_pub_param = param_find("LPE_VXY_PUB");
+	_lpe_acc_xy_param = param_find("LPE_ACC_XY");
+	_lpe_acc_z_param = param_find("LPE_ACC_Z");
 
 	// Initialize values
 	param_get(_lpe_fusion_param, &_lpe_fusion);
-	param_get(_lpe_vxy_pub_param, &_lpe_vxy_pub);
+	param_get(_lpe_acc_xy_param, &_lpe_acc_xy);
+	param_get(_lpe_acc_z_param, &_lpe_acc_z);
 }
 
 int AllParametersLogger::main()
@@ -64,11 +66,13 @@ int AllParametersLogger::main()
 	while (!appState.exitRequested()) {
 
 		param_get(_lpe_fusion_param, &_lpe_fusion);
-		param_get(_lpe_vxy_pub_param, &_lpe_vxy_pub);
+		param_get(_lpe_acc_xy_param, &_lpe_acc_xy);
+		param_get(_lpe_acc_z_param, &_lpe_acc_z);
 
 		PX4_INFO("Parameter Update:");
 		PX4_INFO("LPE_FUSION: %" PRId32, _lpe_fusion);
-		PX4_INFO("LPE_VXY_PUB: %s", _lpe_vxy_pub ? "true" : "false");
+		PX4_INFO("LPE_ACC_XY: %" PRIu16, _lpe_acc_xy);
+		PX4_INFO("LPE_ACC_Z: %" PRIu16, _lpe_acc_z);
 
 		px4_sleep(2);
 	}

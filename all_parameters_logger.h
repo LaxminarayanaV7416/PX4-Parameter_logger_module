@@ -49,7 +49,7 @@
 class AllParametersLogger : public ModuleBase<AllParametersLogger>, public ModuleParams
 {
 public:
-	AllParametersLogger() {}
+	AllParametersLogger()
 
 	~AllParametersLogger() {}
 
@@ -67,7 +67,8 @@ private:
 
     // Current values
     int32_t _lpe_fusion;
-    bool _lpe_vxy_pub;
+    float _lpe_acc_xy;
+    float _lpe_acc_z;
 
     // // Check for parameter updates
     // void check_for_updates();
