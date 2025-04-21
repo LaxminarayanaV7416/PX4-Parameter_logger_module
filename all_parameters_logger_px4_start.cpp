@@ -58,8 +58,8 @@ static int daemon_task;             /* Handle of deamon task / thread */
 // 		 "\tparam_logger {start|status|stop|shrink|update}\n"
 // 		 "\t        param [set|get|list|save] <node-id> <name> <value>|reset <node-id>");
 // }
-extern "C" __EXPORT int all_parameters_logger_main(int argc, char *argv[]);
-int all_parameters_logger_main(int argc, char *argv[])
+extern "C" __EXPORT int param_logger_main(int argc, char *argv[]);
+int param_logger_main(int argc, char *argv[])
 {
 
 	if (argc < 2) {
