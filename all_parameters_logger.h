@@ -49,7 +49,7 @@
 class AllParametersLogger : public ModuleBase<AllParametersLogger>, public ModuleParams
 {
 public:
-	AllParametersLogger()
+	AllParametersLogger();
 
 	~AllParametersLogger() {}
 
@@ -63,7 +63,8 @@ private:
 
     // Parameters to monitor (from local_position_estimator)
     param_t _lpe_fusion_param;
-    param_t _lpe_vxy_pub_param;
+    param_t _lpe_acc_xy_param;
+    param_t _lpe_acc_z_param;
 
     // Current values
     int32_t _lpe_fusion;
