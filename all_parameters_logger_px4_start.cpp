@@ -52,12 +52,12 @@ static int daemon_task;             /* Handle of deamon task / thread */
 
 //using namespace px4;
 
-static void print_usage()
-{
-	PX4_INFO("usage: \n"
-		 "\tparam_logger {start|status|stop|shrink|update}\n"
-		 "\t        param [set|get|list|save] <node-id> <name> <value>|reset <node-id>");
-}
+// static void print_usage()
+// {
+// 	PX4_INFO("usage: \n"
+// 		 "\tparam_logger {start|status|stop|shrink|update}\n"
+// 		 "\t        param [set|get|list|save] <node-id> <name> <value>|reset <node-id>");
+// }
 extern "C" __EXPORT int all_parameters_logger_main(int argc, char *argv[]);
 int all_parameters_logger_main(int argc, char *argv[])
 {

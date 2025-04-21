@@ -46,7 +46,7 @@
 #include <uORB/topics/parameter_update.h>
 #include <parameters/param.h>
 
-class AllParametersLogger
+class AllParametersLogger : public ModuleBase<AllParametersLogger>, public ModuleParams
 {
 public:
 	AllParametersLogger() {}

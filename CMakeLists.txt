@@ -44,8 +44,8 @@ px4_add_module(
 	MAIN param_logger
 	COMPILE_FLAGS
 	SRCS
-        all_parameters_logger_main.cpp
-		all_parameters_logger_start.cpp
+        all_parameters_logger_px4_main.cpp
+		all_parameters_logger_px4_start.cpp
 		all_parameters_logger.cpp
 	DEPENDS
 	)

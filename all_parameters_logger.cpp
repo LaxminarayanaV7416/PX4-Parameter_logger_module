@@ -46,7 +46,7 @@
 
 px4::AppState AllParametersLogger::appState;
 
-AllParametersLogger::AllParametersLogger()
+AllParametersLogger::AllParametersLogger() : ModuleParams(nullptr)
 {
 	// Find parameters by name
 	_lpe_fusion_param = param_find("LPE_FUSION");
