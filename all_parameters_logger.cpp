@@ -71,8 +71,8 @@ int AllParametersLogger::main()
 
 		PX4_INFO("Parameter Update:");
 		PX4_INFO("LPE_FUSION: %" PRId32, _lpe_fusion);
-		PX4_INFO("LPE_ACC_XY: %" PRIu16, _lpe_acc_xy);
-		PX4_INFO("LPE_ACC_Z: %" PRIu16, _lpe_acc_z);
+		PX4_INFO("LPE_ACC_XY: %4.3f" static_cast<double>(_lpe_acc_xy));
+		PX4_INFO("LPE_ACC_Z: %4.3f"  static_cast<double>(_lpe_acc_z));
 
 		px4_sleep(2);
 	}
