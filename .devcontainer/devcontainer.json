@@ -1,0 +1,56 @@
+// For format details, see https://aka.ms/vscode-remote/devcontainer.json or this file's README at:
+// https://github.com/microsoft/vscode-dev-containers/tree/v0.134.0/containers/cpp
+{
+	"name": "px4-dev-ros2",
+	"image": "px4io/px4-dev-ros2-foxy:2022-07-31",
+
+	"runArgs": [
+		"--privileged",
+		"--cap-add=SYS_PTRACE",
+		"--security-opt", "seccomp=unconfined",
+		"--env=LOCAL_USER_ID=${localEnv:UID}",
+		"--env=DISPLAY=${localEnv:DISPLAY}",
+		"--volume=${env:HOME}/Documents/debug_px4/PX4-Autopilot:/src/PX4-Autopilot:rw",
+		"--volume=/tmp/.X11-unix:/tmp/.X11-unix:ro",
+		"--network=host"
+	],
+
+	// Set *default* container specific settings.json values on container create.
+	"settings": {
+		"terminal.integrated.shell.linux": "/bin/bash"
+	},
+
+	// Add the IDs of extensions you want installed when the container is created.
+	"extensions": [
+		"chiehyu.vscode-astyle",
+		"dan-c-underwood.arm",
+		"editorconfig.editorconfig",
+		"fredericbonnet.cmake-test-adapter",
+		"github.vscode-pull-request-github",
+		"marus25.cortex-debug",
+		"ms-azuretools.vscode-docker",
+		"ms-iot.vscode-ros",
+		"ms-python.python",
+		"ms-vscode.cmake-tools",
+		"ms-vscode.cpptools",
+		"ms-vscode.cpptools-extension-pack",
+		"redhat.vscode-yaml",
+		"streetsidesoftware.code-spell-checker",
+		"twxs.cmake",
+		"uavcan.dsdl",
+		"wholroyd.jinja",
+		"zixuanwang.linkerscript",
+		"ms-vscode.makefile-tools"
+	],
+
+	"containerUser": "user",
+	"containerEnv": {
+		"LOCAL_USER_ID": "${localEnv:UID}",
+		"DISPLAY": "${localEnv:DISPLAY}"
+	},
+
+	"workspaceFolder": "/src/PX4-Autopilot",
+	"postCreateCommand": "make px4_sitl_default gazebo-classic_typhoon_h480"
+
+	// "forwardPorts": [14556]
+}
