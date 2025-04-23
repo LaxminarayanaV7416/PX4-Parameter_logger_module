@@ -37,6 +37,7 @@
  *
  * @author Laxminarayana Vadnala <laxminarayana.vadnala@slu.edu>
  */
+
 #pragma once
 
 #include <px4_platform_common/app.h>
@@ -49,29 +50,35 @@
 class AllParametersLogger : public ModuleBase<AllParametersLogger>, public ModuleParams
 {
 public:
-	AllParametersLogger();
+    AllParametersLogger(): ModuleParams(nullptr)
+    {
 
-	~AllParametersLogger() {}
+    {% for param_name, datatype in params.items() %}
+    {%- set variable_param = param_name -%}
+        _{{-variable_param.replace(".", "_")-}}_param = param_find("{{ param_name.upper() }}");
+        param_get(_{{-variable_param.replace(".", "_")-}}_param, &_{{-variable_param.replace(".", "_")-}});
+    {% endfor %}
+    }
 
-	int main();
+    ~AllParametersLogger() {}
 
-	static px4::AppState appState; /* track requests to terminate app */
+    int main();
+
+    static px4::AppState appState; /* track requests to terminate app */
 
 private:
     // Subscription to parameter updates
     uORB::Subscription _param_sub{ORB_ID(parameter_update)};
 
     // Parameters to monitor (from local_position_estimator)
-    param_t _lpe_fusion_param;
-    param_t _lpe_acc_xy_param;
-    param_t _lpe_acc_z_param;
-
-    // Current values
-    int32_t _lpe_fusion;
-    float _lpe_acc_xy;
-    float _lpe_acc_z;
-
-    // // Check for parameter updates
-    // void check_for_updates();
+    {% for param_name, datatype in params.items() %}
+        {%- set variable_param = param_name -%}
+            param_t _{{-variable_param.replace(".", "_")-}}_param;
+        {% if datatype == "int32" %}
+            {{ datatype }}_t _{{-variable_param.replace(".", "_")-}};
+        {% else %}
+            {{ datatype }} _{{-variable_param.replace(".", "_")-}};
+        {% endif %}
+    {% endfor %}
 
 };

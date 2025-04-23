@@ -1,6 +1,8 @@
 {
     "parameters" : [
         "lpe_en",
-        "lpe_fusion"
+        "lpe_fusion",
+        "lpe_acc_xy",
+        "lpe_acc_z"
     ]
 }

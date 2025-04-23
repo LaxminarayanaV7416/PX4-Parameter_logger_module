@@ -46,18 +46,6 @@
 
 px4::AppState AllParametersLogger::appState;
 
-AllParametersLogger::AllParametersLogger() : ModuleParams(nullptr)
-{
-	// Find parameters by name
-	_lpe_fusion_param = param_find("LPE_FUSION");
-	_lpe_acc_xy_param = param_find("LPE_ACC_XY");
-	_lpe_acc_z_param = param_find("LPE_ACC_Z");
-
-	// Initialize values
-	param_get(_lpe_fusion_param, &_lpe_fusion);
-	param_get(_lpe_acc_xy_param, &_lpe_acc_xy);
-	param_get(_lpe_acc_z_param, &_lpe_acc_z);
-}
 
 int AllParametersLogger::main()
 {
@@ -65,16 +53,21 @@ int AllParametersLogger::main()
 
 	while (!appState.exitRequested()) {
 
-		param_get(_lpe_fusion_param, &_lpe_fusion);
-		param_get(_lpe_acc_xy_param, &_lpe_acc_xy);
-		param_get(_lpe_acc_z_param, &_lpe_acc_z);
+    {% for param_name, datatype in params.items() %}
+    {%- set variable_param = param_name -%}
+        param_get(_{{-variable_param.replace(".", "_")-}}_param, &_{{-variable_param.replace(".", "_")-}});
+    {% endfor %}
 
-		PX4_INFO("Parameter Update:");
-		PX4_INFO("LPE_FUSION: %" PRId32, _lpe_fusion);
-		PX4_INFO("LPE_ACC_XY: %4.3f", static_cast<double>(_lpe_acc_xy));
-		PX4_INFO("LPE_ACC_Z: %4.3f",  static_cast<double>(_lpe_acc_z));
-
-		px4_sleep(2);
+    PX4_INFO("Parameter Update:");
+    {% for param_name, datatype in params.items() %}
+    {%- set variable_param = param_name -%}
+        {% if datatype == "int32" %}
+            PX4_INFO("{{ param_name.upper() }}: %" PRId32, _{{-variable_param.replace(".", "_")-}});
+        {% else %}
+            PX4_INFO("{{ param_name.upper() }}: %4.3f", static_cast<double>(_{{-variable_param.replace(".", "_")-}}));
+        {% endif %}
+    {% endfor %}	
+    px4_sleep(2);
 	}
 
 	return 0;
