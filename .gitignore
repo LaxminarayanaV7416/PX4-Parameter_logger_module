@@ -30,3 +30,7 @@
 *.exe
 *.out
 *.app
+
+all_parameters_logger.cpp
+all_parameters_logger.h
+*.csv

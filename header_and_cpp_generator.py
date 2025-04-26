@@ -7,11 +7,10 @@ try:
     # import bson
     from jinja2 import Environment, FileSystemLoader
 except Exception as err:
-    print("Module BSON is not found, please do a `pip install bson` to fix this error and rerun the things")
-    print("Failed to import jinja2 or bson: " + str(err))
+    print("Failed to import jinja2: " + str(err))
     print("")
     print("You may need to install it using:")
-    print("    pip3 install --user jinja2 bson")
+    print("    pip3 install --user jinja2")
     print("")
     sys.exit(1)
     sys.exit()
@@ -49,6 +48,7 @@ def main():
 
     with open(args.src_path) as input_file:
         input_params =  json.load(input_file).get("parameters", [])
+        input_params = list(map(lambda inp : inp.lower(), input_params))
 
     params_data = {}
     for param_dict in mavlink_params:

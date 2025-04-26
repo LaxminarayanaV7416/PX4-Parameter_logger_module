@@ -1,8 +1,7 @@
 {
     "parameters" : [
-        "lpe_en",
-        "lpe_fusion",
-        "lpe_acc_xy",
-        "lpe_acc_z"
+        "mpc_xy_cruise",
+        "MC_PITCHRATE_P",
+        "EKF2_GPS_DELAY"
     ]
 }

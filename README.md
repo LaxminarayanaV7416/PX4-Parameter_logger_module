@@ -22,4 +22,8 @@ make changes to the file <path>/PX4-Autopilot/boards/px4/sitl/default.px4board
 add line `CONFIG_EXAMPLES_PARAM_LOGGER=y` at the last
 
 
+to automatically start the things add line `param_logger start` to file rcS at path `<path>/PX4-Autopilot/ROMFS/px4fmu_common/init.d-posix/rcS`
+
+
+
 To automatically start the param logging we need to add the last step that is starting the param_logger module at the start of the program for which we need to add the param_logger start command to the file called `<path>/PX4-Autopilot/ROMFS/px4fmu_common/init.d-posix/rcS` add the line `param_logger start` at the end of the file. then we are good to automatically start the logger to capture parameters logging automatically
