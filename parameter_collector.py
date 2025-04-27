@@ -57,6 +57,36 @@ def file_opener(file_path):
         print("something went wrong please check the error: ", err)
     return data
 
+
+def param_search(file_content, param):
+    search_count = 0
+    for line in file_content:
+        # check that line is not a comment it usually starts with //
+        if not line.strip().startswith("//"):
+            for p in param:
+                if p in line:
+                    search_count += 1
+    return search_count
+
+
+def param_constuctor(param):
+    return [f"_param_{param.strip().lower()}", f"_params->{param.strip().lower()}"]
+
+
+def param_explorer(base_path, param, occurence_count = 0):
+    _param = param_constuctor(param)
+    folder_content = os.listdir(base_path)
+    for file_name in folder_content:
+        file_path = os.path.join(base_path, file_name)
+        _, extension = os.path.splitext(file_name.lower())
+        if os.path.isdir(file_path):
+            occurence_count = param_explorer(file_path, param, occurence_count)
+        elif extension in SUPPORTED_EXTENSIONS:
+            file_content = file_opener(file_path = file_path)
+            occurence_count += param_search(file_content, _param)
+    return occurence_count
+
+
 def file_path_decoupler(file_path):
     directory, file_name = os.path.split(file_path)
     directory = directory.rstrip("/")
@@ -154,6 +184,7 @@ def main():
     data = folder_scrapper(BASE_PATH, data)
     df = pd.DataFrame(data)
     TARGET_PATH = os.path.join(os.path.abspath(args.target_path), "parameters_metadata.csv")
+    df["param_rank"] = df["param_name"].apply(lambda x : param_explorer(BASE_PATH, x))
     df.to_csv(TARGET_PATH, index = False)
 
 
