@@ -49,6 +49,14 @@ def alter_logger_cpp_file(px4_base_path, topic_name):
     with open(file_path, mode= 'w') as log_file_writer:
         log_file_writer.writelines(writable_lines)
 
+def add_config_logger_to_board(file_path, line):
+    with open(file_path, mode = 'r') as file_buffer:
+        lines = file_buffer.readlines()
+    lines.append(line)
+    with open(file_path, mode = 'w') as file_buffer:
+        file_buffer.writelines(lines)
+
+
 def main():
     args = get_args()
     print("Input Source path to parse and convert to the parameter" ,args.src_path)
@@ -73,14 +81,14 @@ def main():
 
     # Geneating the parameter collector header file this will be inside the repo folder
     template = load_template(MODULE_BASE_PATH, "all_parameters_logger.h.jinja")
-    content = template.render(params = params_data)
+    content = template.render(params = params_data, message_file_name = args.message_file_name)
 
     with open(os.path.join(MODULE_BASE_PATH, "all_parameters_logger.h"), mode = 'w') as file_buffer:
         file_buffer.write(content)
 
     # Geneating the parameter collector cpp file this will be inside the repo folder
     template = load_template(MODULE_BASE_PATH, "all_parameters_logger.cpp.jinja")
-    content = template.render(params = params_data)
+    content = template.render(params = params_data,  message_file_name = args.message_file_name)
 
     with open(os.path.join(MODULE_BASE_PATH, "all_parameters_logger.cpp"), mode = 'w') as file_buffer:
         file_buffer.write(content)
@@ -100,6 +108,14 @@ def main():
         file_buffer.write(content)
 
     alter_logger_cpp_file(PX4_BASE_PATH, args.message_file_name)
+    add_config_logger_to_board(
+        os.path.join(PX4_BASE_PATH, "boards","px4", "sitl", "default.px4board"),
+        f"CONFIG_EXAMPLES_PARAM_LOGGER=y\n"
+    )
+    add_config_logger_to_board(
+        os.path.join(PX4_BASE_PATH, "ROMFS", "px4fmu_common", "init.d-posix", "rcS"),
+        f"param_logger start\n"
+    )
 
 if __name__ == '__main__':
     main()

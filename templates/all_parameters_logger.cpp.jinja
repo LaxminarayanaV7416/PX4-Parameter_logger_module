@@ -56,18 +56,11 @@ int AllParametersLogger::main()
     {% for param_name, datatype in params.items() %}
     {%- set variable_param = param_name -%}
         param_get(_{{-variable_param.replace(".", "_")-}}_param, &_{{-variable_param.replace(".", "_")-}});
+        param_msg.{{-variable_param.replace(".", "_")-}} = _{{-variable_param.replace(".", "_")-}};
     {% endfor %}
+    param_msg.timestamp = hrt_absolute_time();
+    orb_publish(ORB_ID({{ message_file_name }}), param_pub, &param_msg);
 
-    PX4_INFO("Parameter Update:");
-    {% for param_name, datatype in params.items() %}
-    {%- set variable_param = param_name -%}
-        {% if datatype == "int32" %}
-            PX4_INFO("{{ param_name.upper() }}: %" PRId32, _{{-variable_param.replace(".", "_")-}});
-        {% else %}
-            PX4_INFO("{{ param_name.upper() }}: %4.3f", static_cast<double>(_{{-variable_param.replace(".", "_")-}}));
-        {% endif %}
-    {% endfor %}	
-    px4_sleep(2);
 	}
 
 	return 0;

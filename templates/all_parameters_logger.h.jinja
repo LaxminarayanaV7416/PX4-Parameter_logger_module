@@ -45,6 +45,7 @@
 #include <px4_platform_common/module_params.h>
 #include <uORB/Subscription.hpp>
 #include <uORB/topics/parameter_update.h>
+#include <uORB/topics/{{ message_file_name }}.h>
 #include <parameters/param.h>
 
 class AllParametersLogger : public ModuleBase<AllParametersLogger>, public ModuleParams
@@ -58,12 +59,14 @@ public:
         _{{-variable_param.replace(".", "_")-}}_param = param_find("{{ param_name.upper() }}");
         param_get(_{{-variable_param.replace(".", "_")-}}_param, &_{{-variable_param.replace(".", "_")-}});
     {% endfor %}
+    memset(&param_msg, 0, sizeof(param_msg));
+    orb_advert_t param_pub = orb_advertise(ORB_ID({{ message_file_name }}), &param_msg);
     }
 
     ~AllParametersLogger() {}
 
     int main();
-
+    struct {{ message_file_name }}_s param_msg;
     static px4::AppState appState; /* track requests to terminate app */
 
 private:
