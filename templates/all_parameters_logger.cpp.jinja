@@ -50,7 +50,7 @@ px4::AppState AllParametersLogger::appState;
 int AllParametersLogger::main()
 {
 	appState.setRunning(true);
-
+    orb_advert_t param_pub = orb_advertise(ORB_ID({{ message_file_name }}), &param_msg);
 	while (!appState.exitRequested()) {
 
     {% for param_name, datatype in params.items() %}

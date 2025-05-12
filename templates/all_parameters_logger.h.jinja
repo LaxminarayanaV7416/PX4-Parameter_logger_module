@@ -47,6 +47,11 @@
 #include <uORB/topics/parameter_update.h>
 #include <uORB/topics/{{ message_file_name }}.h>
 #include <parameters/param.h>
+#include <uORB/uORB.h>
+#include <px4_platform_common/px4_config.h>
+#include <px4_platform_common/log.h>
+#include <px4_platform_common/tasks.h>
+#include <px4_platform_common/posix.h>
 
 class AllParametersLogger : public ModuleBase<AllParametersLogger>, public ModuleParams
 {
@@ -60,7 +65,6 @@ public:
         param_get(_{{-variable_param.replace(".", "_")-}}_param, &_{{-variable_param.replace(".", "_")-}});
     {% endfor %}
     memset(&param_msg, 0, sizeof(param_msg));
-    orb_advert_t param_pub = orb_advertise(ORB_ID({{ message_file_name }}), &param_msg);
     }
 
     ~AllParametersLogger() {}
