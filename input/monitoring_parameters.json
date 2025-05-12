@@ -2,6 +2,7 @@
     "parameters" : [
         "mpc_xy_cruise",
         "MC_PITCHRATE_P",
-        "EKF2_GPS_DELAY"
+        "EKF2_GPS_DELAY",
+        "EKF2_GPS_CTRL"
     ]
 }

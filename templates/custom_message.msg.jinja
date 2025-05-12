@@ -1,0 +1,9 @@
+uint64 timestamp            # time since system start (microseconds)
+{% for param_name, datatype in params.items() %}
+{%- set variable_param = param_name -%}
+        {% if datatype == "int32" %}
+u{{ datatype }}{{ " " }}{{-variable_param.replace(".", "_")-}}
+        {% else %}
+{{ datatype }}32{{ " " }}{{-variable_param.replace(".", "_")-}}
+        {% endif %}
+{% endfor %}

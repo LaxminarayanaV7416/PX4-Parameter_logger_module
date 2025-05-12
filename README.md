@@ -31,9 +31,17 @@ To automatically start the param logging we need to add the last step that is st
 
 
 
-`python3 header_and_cpp_generator.py --src-path ./input/monitoring_parameters.json --base-path .`
+```bash
+python3 header_and_cpp_generator.py --src-path ./input/monitoring_parameters.json --base-path . \
+--px4-base-path "/home/uavlab/Documents/PX4-Autopilot" --message-file-name "trail_message"
+```
 
 
 
 `python3 parameter_collector.py --base-path "/home/uavlab/Documents/PX4-Autopilot" --target-path .`
+
+hwo to create your topic that we can log into the ULOG file is, head to folder `msg` and create a file with Capitalized Camle case with extension .msg and add first as `timestamp` to the structure and followed by your own datatypes and rest as followed. After creating the file please 
+
+
+We have place where all default ulog topics are logged they are `src/modules/logger/logged_topics.cpp` (for default topics)
 
