@@ -38,45 +38,54 @@
  * @author Laxminarayana Vadnala <laxminarayana.vadnala@slu.edu>
  */
 
+#pragma once
 
-#include "all_parameters_logger.h"
-#include <px4_platform_common/time.h>
-#include <unistd.h>
-#include <stdio.h>
+#include <px4_platform_common/app.h>
+#include <px4_platform_common/module.h>
+#include <px4_platform_common/module_params.h>
+#include <uORB/Subscription.hpp>
+#include <uORB/topics/parameter_update.h>
+#include <uORB/topics/{{ message_file_name }}.h>
+#include <parameters/param.h>
+#include <uORB/uORB.h>
+#include <px4_platform_common/px4_config.h>
+#include <px4_platform_common/log.h>
+#include <px4_platform_common/tasks.h>
+#include <px4_platform_common/posix.h>
 
-px4::AppState AllParametersLogger::appState;
-
-AllParametersLogger::AllParametersLogger() : ModuleParams(nullptr)
+class AllParametersLogger : public ModuleBase<AllParametersLogger>, public ModuleParams
 {
-	// Find parameters by name
-	_lpe_fusion_param = param_find("LPE_FUSION");
-	_lpe_acc_xy_param = param_find("LPE_ACC_XY");
-	_lpe_acc_z_param = param_find("LPE_ACC_Z");
+public:
+    AllParametersLogger(): ModuleParams(nullptr)
+    {
 
-	// Initialize values
-	param_get(_lpe_fusion_param, &_lpe_fusion);
-	param_get(_lpe_acc_xy_param, &_lpe_acc_xy);
-	param_get(_lpe_acc_z_param, &_lpe_acc_z);
-}
+    {% for param_name, datatype in params.items() %}
+    {%- set variable_param = param_name -%}
+        _{{-variable_param.replace(".", "_")-}}_param = param_find("{{ param_name.upper() }}");
+        param_get(_{{-variable_param.replace(".", "_")-}}_param, &_{{-variable_param.replace(".", "_")-}});
+    {% endfor %}
+    memset(&param_msg, 0, sizeof(param_msg));
+    }
 
-int AllParametersLogger::main()
-{
-	appState.setRunning(true);
+    ~AllParametersLogger() {}
 
-	while (!appState.exitRequested()) {
+    int main();
+    struct {{ message_file_name }}_s param_msg;
+    static px4::AppState appState; /* track requests to terminate app */
 
-		param_get(_lpe_fusion_param, &_lpe_fusion);
-		param_get(_lpe_acc_xy_param, &_lpe_acc_xy);
-		param_get(_lpe_acc_z_param, &_lpe_acc_z);
+private:
+    // Subscription to parameter updates
+    uORB::Subscription _param_sub{ORB_ID(parameter_update)};
 
-		PX4_INFO("Parameter Update:");
-		PX4_INFO("LPE_FUSION: %" PRId32, _lpe_fusion);
-		PX4_INFO("LPE_ACC_XY: %4.3f", static_cast<double>(_lpe_acc_xy));
-		PX4_INFO("LPE_ACC_Z: %4.3f",  static_cast<double>(_lpe_acc_z));
+    // Parameters to monitor (from local_position_estimator)
+    {% for param_name, datatype in params.items() %}
+        {%- set variable_param = param_name -%}
+            param_t _{{-variable_param.replace(".", "_")-}}_param;
+        {% if datatype == "int32" %}
+            {{ datatype }}_t _{{-variable_param.replace(".", "_")-}};
+        {% else %}
+            {{ datatype }} _{{-variable_param.replace(".", "_")-}};
+        {% endif %}
+    {% endfor %}
 
-		px4_sleep(2);
-	}
-
-	return 0;
-}
-
+};

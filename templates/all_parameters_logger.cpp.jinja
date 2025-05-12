@@ -37,41 +37,32 @@
  *
  * @author Laxminarayana Vadnala <laxminarayana.vadnala@slu.edu>
  */
-#pragma once
 
-#include <px4_platform_common/app.h>
-#include <px4_platform_common/module.h>
-#include <px4_platform_common/module_params.h>
-#include <uORB/Subscription.hpp>
-#include <uORB/topics/parameter_update.h>
-#include <parameters/param.h>
 
-class AllParametersLogger : public ModuleBase<AllParametersLogger>, public ModuleParams
+#include "all_parameters_logger.h"
+#include <px4_platform_common/time.h>
+#include <unistd.h>
+#include <stdio.h>
+
+px4::AppState AllParametersLogger::appState;
+
+
+int AllParametersLogger::main()
 {
-public:
-	AllParametersLogger();
+	appState.setRunning(true);
+    orb_advert_t param_pub = orb_advertise(ORB_ID({{ message_file_name }}), &param_msg);
+	while (!appState.exitRequested()) {
 
-	~AllParametersLogger() {}
+    {% for param_name, datatype in params.items() %}
+    {%- set variable_param = param_name -%}
+        param_get(_{{-variable_param.replace(".", "_")-}}_param, &_{{-variable_param.replace(".", "_")-}});
+        param_msg.{{-variable_param.replace(".", "_")-}} = _{{-variable_param.replace(".", "_")-}};
+    {% endfor %}
+    param_msg.timestamp = hrt_absolute_time();
+    orb_publish(ORB_ID({{ message_file_name }}), param_pub, &param_msg);
 
-	int main();
+	}
 
-	static px4::AppState appState; /* track requests to terminate app */
+	return 0;
+}
 
-private:
-    // Subscription to parameter updates
-    uORB::Subscription _param_sub{ORB_ID(parameter_update)};
-
-    // Parameters to monitor (from local_position_estimator)
-    param_t _lpe_fusion_param;
-    param_t _lpe_acc_xy_param;
-    param_t _lpe_acc_z_param;
-
-    // Current values
-    int32_t _lpe_fusion;
-    float _lpe_acc_xy;
-    float _lpe_acc_z;
-
-    // // Check for parameter updates
-    // void check_for_updates();
-
-};
